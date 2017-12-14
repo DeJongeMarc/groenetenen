@@ -11,4 +11,4 @@
 <img alt='gazon in de ochtend' src='<c:url value="/images/ochtend.jpg"/>'
   class='fullwidth'>
 </body>
-</html> 
+</html>
