@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import be.vdab.entities.Filiaal;
 import be.vdab.exceptions.FiliaalHeeftNogWerknemersException;
 import be.vdab.services.FiliaalService;
+import be.vdab.valueobjects.PostcodeReeks;
 
 @Controller
 @RequestMapping("/filialen")
@@ -22,6 +23,7 @@ public class FiliaalController {
 	private static final String FILIAAL_VIEW = "filialen/filiaal";
 	private static final String TOEVOEGEN_VIEW = "filialen/toevoegen";
 	private static final String VERWIJDERD_VIEW = "filialen/verwijderd";
+	private static final String PER_POSTCODE_VIEW = "filialen/perpostcode";
 	private static final String REDIRECT_URL_NA_TOEVOEGEN = "redirect:/filialen";
 	private static final String REDIRECT_URL_FILIAAL_NIET_GEVONDEN = "redirect:/filialen";
 	private static final String REDIRECT_URL_NA_VERWIJDEREN = "redirect:/filialen/{id}/verwijderd";
@@ -76,6 +78,19 @@ public class FiliaalController {
 	@GetMapping("{id}/verwijderd")
 	String deleted() {
 		return VERWIJDERD_VIEW;
+	}
+
+	@GetMapping("perpostcode")
+	ModelAndView findByPostcodeReeks() {
+		PostcodeReeks reeks = new PostcodeReeks();
+		reeks.setVanpostcode(1000);
+		reeks.setTotpostcode(9999);
+		return new ModelAndView(PER_POSTCODE_VIEW).addObject(reeks);
+	}
+
+	@GetMapping(params = { "vanpostcode", "totpostcode" })
+	ModelAndView findByPostcodeReeks(PostcodeReeks reeks) {
+		return new ModelAndView(PER_POSTCODE_VIEW, "filialen", filiaalService.findByPostcodeReeks(reeks));
 	}
 
 }
