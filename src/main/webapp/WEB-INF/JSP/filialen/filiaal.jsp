@@ -27,14 +27,11 @@
 				<dt>Waarde gebouw</dt>
 				<dd>
 					&euro;
-					<fmt:formatNumber value='${filiaal.waardeGebouw}' />
+					<spring:eval expression='filiaal.waardeGebouw' />
 				</dd>
 				<dt>Ingebruikname</dt>
-				<fmt:parseDate value="${filiaal.inGebruikName}" pattern="yyyy-MM-dd"
-					var="inGebruikNameAlsDate" type="date" />
 				<dd>
-					<fmt:formatDate value='${inGebruikNameAlsDate}' type="date"
-						dateStyle="short" />
+					<spring:eval expression='filiaal.inGebruikName' />
 				</dd>
 			</dl>
 			<spring:url value='/filialen/{id}/verwijderen' var='verwijderURL'>
