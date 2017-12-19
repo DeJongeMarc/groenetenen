@@ -16,7 +16,7 @@ import be.vdab.entities.Offerte;
 
 @Controller
 @RequestMapping("/offertes")
-@SessionAttributes("offerte") 
+@SessionAttributes("offerte")
 public class OfferteController {
 	private static final String STAP1_VIEW = "offertes/stap1";
 	private static final String STAP2_VIEW = "offertes/stap2";
@@ -41,12 +41,21 @@ public class OfferteController {
 	@PostMapping(params = "bevestigen")
 	String create(@Validated(Offerte.Stap2.class) Offerte offerte, BindingResult bindingResult,
 			SessionStatus sessionStatus) {
+		if (!offerte.getGazontypes().values().contains(true)) {
+			bindingResult.reject("minstensEenGazonType");
+		}
 		if (bindingResult.hasErrors()) {
 			return STAP2_VIEW;
 		}
 		LOGGER.info("offerte versturen via e-mail");
 		sessionStatus.setComplete();
 		return REDIRECT_URL_NA_TOEVOEGEN;
+	}
+
+	@PostMapping(params = "nogeennummer")
+	String nogEenNummer(Offerte offerte) {
+		offerte.nogEenTelefoonNr();
+		return STAP1_VIEW;
 	}
 
 }
