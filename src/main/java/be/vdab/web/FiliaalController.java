@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -35,6 +36,7 @@ public class FiliaalController {
 	private static final String REDIRECT_URL_NA_VERWIJDEREN = "redirect:/filialen/{id}/verwijderd";
 	private static final String REDIRECT_URL_HEEFT_NOG_WERKNEMERS = "redirect:/filialen/{id}";
 	private static final String REDIRECT_URL_NA_WIJZIGEN = "redirect:/filialen";
+	private static final String REDIRECT_URL_NA_LOCKING_EXCEPTION = "redirect:/filialen/{id}?optimisticlockingexception=true";
 	private final FiliaalService filiaalService;
 
 	FiliaalController(FiliaalService filiaalService) {
@@ -123,8 +125,12 @@ public class FiliaalController {
 		if (bindingResult.hasErrors()) {
 			return WIJZIGEN_VIEW;
 		}
-		filiaalService.update(filiaal);
-		return REDIRECT_URL_NA_WIJZIGEN;
+		try {
+			filiaalService.update(filiaal);
+			return REDIRECT_URL_NA_WIJZIGEN;
+		} catch (ObjectOptimisticLockingFailureException ex) {
+			return REDIRECT_URL_NA_LOCKING_EXCEPTION;
+		}
 	}
 
 	@InitBinder("postcodeReeks")
