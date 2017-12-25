@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import be.vdab.datasource.TestDataSourceConfig;
 import be.vdab.entities.Filiaal;
+import be.vdab.mail.MailConfig;
 import be.vdab.repositories.TestRepositoriesConfig;
 import be.vdab.services.FiliaalService;
 import be.vdab.services.ServicesConfig;
@@ -35,7 +36,7 @@ import be.vdab.web.ControllersConfig;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestDataSourceConfig.class, TestRepositoriesConfig.class, ServicesConfig.class,
-		ControllersConfig.class, RestControllersConfig.class })
+		ControllersConfig.class, RestControllersConfig.class, MailConfig.class})
 @WebAppConfiguration
 @Transactional
 public class FiliaalRestControllerTest {
@@ -50,7 +51,7 @@ public class FiliaalRestControllerTest {
 	public void before() {
 		filiaal = new Filiaal("naam", true, BigDecimal.TEN, LocalDate.now(),
 				new Adres("straat", "huisNr", 1000, "gemeente"));
-		filiaalService.create(filiaal);
+		filiaalService.create(filiaal, "");
 		mvc = MockMvcBuilders.webAppContextSetup(context).build();
 	}
 
