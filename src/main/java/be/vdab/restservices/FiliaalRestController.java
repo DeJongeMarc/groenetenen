@@ -88,6 +88,11 @@ class FiliaalRestController {
 		headers.setAllow(allowedMethods);
 		return headers;
 	}
+	
+	@GetMapping
+	FilialenResource findAll() {
+	return new FilialenResource(filiaalService.findAll(), entityLinks);
+	}
 
 	@ExceptionHandler(FiliaalNietGevondenException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
