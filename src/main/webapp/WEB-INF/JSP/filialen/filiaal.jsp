@@ -14,7 +14,8 @@
 		<c:when test="${not empty filiaal}">
 			<h1>${filiaal.naam}</h1>
 			<c:if test="${param.optimisticlockingexception}">
-				<div class="fout">Filiaal werd door andere gebruiker als volgt gewijzigd:</div>
+				<div class="fout">Filiaal werd door andere gebruiker als volgt
+					gewijzigd:</div>
 			</c:if>
 			<dl>
 				<dt>Straat</dt>
@@ -31,6 +32,10 @@
 				<dd>
 					&euro;
 					<spring:eval expression='filiaal.waardeGebouw' />
+					<spring:url value='/euro/{euro}/naardollar' var="naarDollarURL">
+						<spring:param name='euro' value='${filiaal.waardeGebouw}' />
+					</spring:url>
+					<a href='${naarDollarURL}'>in $</a>
 				</dd>
 				<dt>Ingebruikname</dt>
 				<dd>
