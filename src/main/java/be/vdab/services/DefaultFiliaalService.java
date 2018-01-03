@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import be.vdab.entities.Filiaal;
@@ -18,17 +20,22 @@ class DefaultFiliaalService implements FiliaalService {
 
 	private final FiliaalRepository filiaalRepository;
 	private final MailSender mailSender;
+	private final JmsMessagingTemplate jmsMessagingTemplate;
 
-	DefaultFiliaalService(FiliaalRepository filiaalRepository, MailSender mailSender) {
+	DefaultFiliaalService(FiliaalRepository filiaalRepository, MailSender mailSender,
+			JmsMessagingTemplate jmsMessagingTemplate) {
 		this.filiaalRepository = filiaalRepository;
 		this.mailSender = mailSender;
+		this.jmsMessagingTemplate = jmsMessagingTemplate;
 	}
 
 	@Override
 	@ModifyingTransactionalServiceMethod
 	public void create(Filiaal filiaal, String urlAlleFilialen) {
 		filiaalRepository.save(filiaal);
-		mailSender.nieuwFiliaalMail(filiaal, urlAlleFilialen + '/' + filiaal.getId());
+		// mailSender.nieuwFiliaalMail(filiaal, urlAlleFilialen + '/' + filiaal.getId());
+		MessageBuilder<String> builder = MessageBuilder.withPayload(urlAlleFilialen + '/' + filiaal.getId());
+		jmsMessagingTemplate.send(builder.build());
 	}
 
 	@Override
@@ -81,7 +88,7 @@ class DefaultFiliaalService implements FiliaalService {
 	}
 
 	@Override
-	@Scheduled(/* cron = "0 0 1 * * *" */ fixedRate = 60000)
+//	@Scheduled(/* cron = "0 0 1 * * *" */ fixedRate = 60000)
 	public void aantalFilialenMail() {
 		mailSender.aantalFilialenMail(filiaalRepository.count());
 	}
