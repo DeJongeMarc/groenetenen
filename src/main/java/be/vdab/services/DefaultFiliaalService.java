@@ -33,9 +33,9 @@ class DefaultFiliaalService implements FiliaalService {
 	@ModifyingTransactionalServiceMethod
 	public void create(Filiaal filiaal, String urlAlleFilialen) {
 		filiaalRepository.save(filiaal);
-		mailSender.nieuwFiliaalMail(filiaal, urlAlleFilialen + '/' + filiaal.getId());
-		/*MessageBuilder<String> builder = MessageBuilder.withPayload(urlAlleFilialen + '/' + filiaal.getId());
-		jmsMessagingTemplate.send(builder.build());*/
+//		mailSender.nieuwFiliaalMail(filiaal, urlAlleFilialen + '/' + filiaal.getId());
+		MessageBuilder<String> builder = MessageBuilder.withPayload(urlAlleFilialen + '/' + filiaal.getId());
+		jmsMessagingTemplate.send(builder.build());
 	}
 
 	@Override
@@ -88,7 +88,7 @@ class DefaultFiliaalService implements FiliaalService {
 	}
 
 	@Override
-//	@Scheduled(/* cron = "0 0 1 * * *" */ fixedRate = 60000)
+	// @Scheduled(/* cron = "0 0 1 * * *" */ fixedRate = 60000)
 	public void aantalFilialenMail() {
 		mailSender.aantalFilialenMail(filiaalRepository.count());
 	}
